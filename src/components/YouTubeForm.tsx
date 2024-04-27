@@ -1,5 +1,5 @@
 import React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 // import { useForm } from '../fakeUseForm'
 import { DevTool } from "@hookform/devtools";
 
@@ -9,38 +9,49 @@ type FormValues = {
   username: string;
   email: string;
   channel: string;
-  social:{
-    twitter:string;
-    facebook:string;
+  social: {
+    twitter: string;
+    facebook: string;
   };
   phoneNumbers: string[];
+  phNumbers: {
+    number: string;
+  }[];
 };
 
 export const YouTubeForm = () => {
   const form = useForm<FormValues>({
-    defaultValues: async ()=>{
-      const response=await fetch("https://jsonplaceholder.typicode.com/users/1")
-      const data=await response.json()
+    defaultValues: async () => {
+      const response = await fetch(
+        "https://jsonplaceholder.typicode.com/users/1"
+      );
+      const data = await response.json();
       return {
-        username:data.username,
-        email:data.email,
-        channel:"",
-        social:{
-           twitter:"",
-           facebook:""
+        username: data.username,
+        email: data.email,
+        channel: "",
+        social: {
+          twitter: "",
+          facebook: "",
         },
-        phoneNumbers:["",""]
-      }
-    }
+        phoneNumbers: ["", ""],
+        phNumbers: [{ number: "" }],
+      };
+    },
   });
   const { register, control, handleSubmit, formState } = form;
   const { errors } = formState;
+
+  const { fields, append, remove } = useFieldArray({
+    name: "phNumbers",
+    control,
+  });
 
   const onSubmit = (data: FormValues) => {
     console.log("Form submitted", data);
   };
 
-  console.log({ handleSubmit });
+  console.log({ handleSubmit ,fields});
 
   renderCount++;
 
@@ -75,14 +86,20 @@ export const YouTubeForm = () => {
                   /^[a-zA-Z0-9.!#$%&*+-/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
                 message: "Invalid email format",
               },
-              validate:{
-                notAdmin:(fieldValue)=>{
-                  return fieldValue!=='admin@example.com' || 'Enter a different email address'
+              validate: {
+                notAdmin: (fieldValue) => {
+                  return (
+                    fieldValue !== "admin@example.com" ||
+                    "Enter a different email address"
+                  );
                 },
-                notBlackList:(fieldValue)=>{
-                   return !fieldValue.endsWith("qq.com") || 'This domain is not supported'
-                }
-              }
+                notBlackList: (fieldValue) => {
+                  return (
+                    !fieldValue.endsWith("qq.com") ||
+                    "This domain is not supported"
+                  );
+                },
+              },
               // validate:(fieldValue)=>{
               //   return fieldValue !=="admin@example.com" || "Enter a different email address"
               // }
@@ -107,20 +124,12 @@ export const YouTubeForm = () => {
 
         <div className="form-control">
           <label htmlFor="twitter">Twitter</label>
-          <input
-            type="text"
-            id="twitter"
-            {...register("social.twitter")}
-          />
+          <input type="text" id="twitter" {...register("social.twitter")} />
         </div>
 
         <div className="form-control">
           <label htmlFor="facebook">Facebook</label>
-          <input
-            type="text"
-            id="facebook"
-            {...register("social.facebook")}
-          />
+          <input type="text" id="facebook" {...register("social.facebook")} />
         </div>
 
         <div className="form-control">
@@ -139,6 +148,30 @@ export const YouTubeForm = () => {
             id="secondary-phone"
             {...register("phoneNumbers.1")}
           />
+        </div>
+
+        <div>
+          <label>List of phone numbers</label>
+          <div>
+            {fields.map((field, index) => {
+              return (
+                <div className="form-control" key={field.id}>
+                  <input
+                    type="text"
+                    {...register(`phNumbers.${index}.number` as const)}
+                  />
+                  {index > 0 && (
+                    <button type="button" onClick={() => remove(index)}>
+                      Remove{" "}
+                    </button>
+                  )}
+                </div>
+              );
+            })}
+            <button type="button" onClick={() => append({ number: "" })}>
+              Add phone number
+            </button>
+          </div>
         </div>
 
         <button>Submit</button>
