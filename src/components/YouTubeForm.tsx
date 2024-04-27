@@ -52,7 +52,7 @@ export const YouTubeForm = () => {
     getValues,
     setValue,
   } = form;
-  const { errors, touchedFields, dirtyFields, isDirty } = formState;
+  const { errors, touchedFields, dirtyFields, isDirty, isValid } = formState;
 
   const { fields, append, remove } = useFieldArray({
     name: "phNumbers",
@@ -90,7 +90,7 @@ export const YouTubeForm = () => {
       shouldTouch: true,
     });
   };
-  console.log({ handleSubmit, fields, watchForm,touchedFields,dirtyFields,isDirty });
+  console.log({ handleSubmit, fields, watchForm,touchedFields,dirtyFields,isDirty,isValid });
 
   renderCount++;
 
@@ -246,7 +246,7 @@ export const YouTubeForm = () => {
           <p className="error">{errors.dob?.message}</p>
         </div>
 
-        <button>Submit</button>
+        <button disabled={!isDirty || !isValid}>Submit</button>
         <button type="button" onClick={handleGetValues}>
           Get Values
         </button>
