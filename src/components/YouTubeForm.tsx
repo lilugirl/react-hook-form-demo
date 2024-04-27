@@ -1,4 +1,4 @@
-import {useEffect} from "react";
+import { useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 // import { useForm } from '../fakeUseForm'
 import { DevTool } from "@hookform/devtools";
@@ -43,7 +43,15 @@ export const YouTubeForm = () => {
       };
     },
   });
-  const { register, control, handleSubmit, formState, watch, getValues } = form;
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState,
+    watch,
+    getValues,
+    setValue,
+  } = form;
   const { errors } = formState;
 
   const { fields, append, remove } = useFieldArray({
@@ -55,22 +63,27 @@ export const YouTubeForm = () => {
     console.log("Form submitted", data);
   };
 
+  useEffect(() => {
+    const subscription = watch((value) => {
+      console.warn("watch value", value);
+    });
 
-
-  useEffect(()=>{
-   const subscription= watch((value)=>{
-        console.warn('watch value',value)
-    })
-
-    return ()=>subscription.unsubscribe();
-  },[watch])
+    return () => subscription.unsubscribe();
+  }, [watch]);
 
   const watchForm = watch();
 
-  const handleGetValues=()=>{
-    console.log("Get values",getValues(["username","social.twitter"]))
-  } 
+  const handleGetValues = () => {
+    console.log("Get values", getValues(["username", "social.twitter"]));
+  };
 
+  const handleSetValue = () => {
+    setValue("username", "", {
+      shouldValidate: true,
+      shouldDirty: true,
+      shouldTouch: true,
+    });
+  };
   console.log({ handleSubmit, fields, watchForm });
 
   renderCount++;
@@ -224,7 +237,12 @@ export const YouTubeForm = () => {
         </div>
 
         <button>Submit</button>
-        <button type="button" onClick={handleGetValues}>Get Values</button>
+        <button type="button" onClick={handleGetValues}>
+          Get Values
+        </button>
+        <button type="button" onClick={handleSetValue}>
+          Set Value
+        </button>
       </form>
       <DevTool control={control} />
     </div>
