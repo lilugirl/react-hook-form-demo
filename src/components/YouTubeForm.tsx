@@ -52,7 +52,7 @@ export const YouTubeForm = () => {
     getValues,
     setValue,
   } = form;
-  const { errors } = formState;
+  const { errors, touchedFields, dirtyFields, isDirty } = formState;
 
   const { fields, append, remove } = useFieldArray({
     name: "phNumbers",
@@ -84,7 +84,7 @@ export const YouTubeForm = () => {
       shouldTouch: true,
     });
   };
-  console.log({ handleSubmit, fields, watchForm });
+  console.log({ handleSubmit, fields, watchForm,touchedFields,dirtyFields,isDirty });
 
   renderCount++;
 
