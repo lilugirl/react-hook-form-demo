@@ -1,4 +1,4 @@
-import React from "react";
+import {useEffect} from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 // import { useForm } from '../fakeUseForm'
 import { DevTool } from "@hookform/devtools";
@@ -17,8 +17,8 @@ type FormValues = {
   phNumbers: {
     number: string;
   }[];
-  age:number;
-  dob:Date;
+  age: number;
+  dob: Date;
 };
 
 export const YouTubeForm = () => {
@@ -38,12 +38,12 @@ export const YouTubeForm = () => {
         },
         phoneNumbers: ["", ""],
         phNumbers: [{ number: "" }],
-        age:0,
-        dob:new Date()
+        age: 0,
+        dob: new Date(),
       };
     },
   });
-  const { register, control, handleSubmit, formState } = form;
+  const { register, control, handleSubmit, formState, watch } = form;
   const { errors } = formState;
 
   const { fields, append, remove } = useFieldArray({
@@ -55,13 +55,24 @@ export const YouTubeForm = () => {
     console.log("Form submitted", data);
   };
 
-  console.log({ handleSubmit ,fields});
+  const watchForm = watch();
+
+  useEffect(()=>{
+   const subscription= watch((value)=>{
+        console.warn('watch value',value)
+    })
+
+    return ()=>subscription.unsubscribe();
+  },[watch])
+
+  console.log({ handleSubmit, fields, watchForm });
 
   renderCount++;
 
   return (
     <div>
       <h1>YouTube Form ({renderCount / 2})</h1>
+      <h2>Watched value: {JSON.stringify(watchForm)}</h2>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <div className="form-control">
           <label htmlFor="username">Username</label>
@@ -178,14 +189,13 @@ export const YouTubeForm = () => {
           </div>
         </div>
 
-
         <div className="form-control">
           <label htmlFor="age">Age</label>
           <input
             type="number"
             id="age"
             {...register("age", {
-              valueAsNumber:true,
+              valueAsNumber: true,
               required: "Age is required",
             })}
           />
@@ -193,14 +203,13 @@ export const YouTubeForm = () => {
           <p className="error">{errors.age?.message}</p>
         </div>
 
-
         <div className="form-control">
           <label htmlFor="dob">Date of birth</label>
           <input
             type="date"
             id="dob"
             {...register("dob", {
-              valueAsDate:true,
+              valueAsDate: true,
               required: "Date of birth is required",
             })}
           />
