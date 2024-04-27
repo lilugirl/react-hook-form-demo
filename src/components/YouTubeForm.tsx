@@ -43,7 +43,7 @@ export const YouTubeForm = () => {
       };
     },
   });
-  const { register, control, handleSubmit, formState, watch } = form;
+  const { register, control, handleSubmit, formState, watch, getValues } = form;
   const { errors } = formState;
 
   const { fields, append, remove } = useFieldArray({
@@ -55,7 +55,7 @@ export const YouTubeForm = () => {
     console.log("Form submitted", data);
   };
 
-  const watchForm = watch();
+
 
   useEffect(()=>{
    const subscription= watch((value)=>{
@@ -64,6 +64,12 @@ export const YouTubeForm = () => {
 
     return ()=>subscription.unsubscribe();
   },[watch])
+
+  const watchForm = watch();
+
+  const handleGetValues=()=>{
+    console.log("Get values",getValues(["username","social.twitter"]))
+  } 
 
   console.log({ handleSubmit, fields, watchForm });
 
@@ -218,6 +224,7 @@ export const YouTubeForm = () => {
         </div>
 
         <button>Submit</button>
+        <button type="button" onClick={handleGetValues}>Get Values</button>
       </form>
       <DevTool control={control} />
     </div>
