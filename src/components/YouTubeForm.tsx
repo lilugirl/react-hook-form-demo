@@ -42,6 +42,7 @@ export const YouTubeForm = () => {
         dob: new Date(),
       };
     },
+    mode:"all"
   });
   const {
     register,
