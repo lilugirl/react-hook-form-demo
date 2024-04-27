@@ -30,7 +30,7 @@ export const YouTubeForm = () => {
       const data = await response.json();
       return {
         username: data.username,
-        email: data.email,
+        email: "",
         channel: "",
         social: {
           twitter: "",
@@ -147,6 +147,12 @@ export const YouTubeForm = () => {
                     "This domain is not supported"
                   );
                 },
+                emailAvailable: async (fieldValue)=>{
+                   const response=await fetch(`https://jsonplaceholder.typicode.com/users?email=${fieldValue}`)
+                   const data=await response.json()
+                   console.warn('email availabe ',data)
+                   return data.length ===0 || "Email already exists"
+                }
               },
               // validate:(fieldValue)=>{
               //   return fieldValue !=="admin@example.com" || "Enter a different email address"
