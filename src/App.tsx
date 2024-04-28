@@ -1,6 +1,7 @@
 
 import {YouTubeForm} from './components/YouTubeForm'
 import { YupYouTubeForm } from './components/YupYouTubeForm'
+import { ZodYouTubeForm } from './components/ZodYouTubeForm'
 import './App.css'
 
 function App() {
@@ -9,7 +10,8 @@ function App() {
   return (
     <>
     {/* <YouTubeForm /> */}
-    <YupYouTubeForm />
+    {/* <YupYouTubeForm /> */}
+    <ZodYouTubeForm />
     </>
   )
 }
